@@ -1,4 +1,12 @@
-class USBDevice {
+import 'dart:isolate';
+
+import 'package:dartusbhid/dartusbhid.dart';
+import 'package:dartusbhid/open_device.dart';
+
+import 'dartusbhid_bindings_generated.dart';
+import 'dart:ffi' as ffi;
+
+class USBDeviceInfo {
   /// Device Vendor ID
   final int vendorId;
   /// Device Product ID
@@ -28,5 +36,16 @@ class USBDevice {
   /// is a USB HID device.
   final int interfaceNumber;
 
-  USBDevice(this.vendorId, this.productId, this.serialNumber, this.releaseNumber, this.manufacturerString, this.productString, this.usagePage, this.usage, this.interfaceNumber);
+  USBDeviceInfo(this.vendorId, this.productId, this.serialNumber, this.releaseNumber, this.manufacturerString, this.productString, this.usagePage, this.usage, this.interfaceNumber);
+
+  Future<OpenUSBDevice> open() async {
+    var responsePort = ReceivePort();
+    Isolate.spawn(usbIsolate, USBIsolateInit(responsePort.sendPort, vendorId, productId));
+    var commandPort = await responsePort.first;
+    if (commandPort is SendPort) {
+      return OpenUSBDevice(commandPort);
+    } else {
+      throw Exception("Error opening device");
+    }
+  }
 }

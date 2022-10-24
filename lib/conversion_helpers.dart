@@ -17,13 +17,13 @@ String toString(Pointer<WChar> str) {
   return result;
 }
 
-List<USBDevice> toDeviceList(Pointer<hid_device_info> pointer) {
-  List<USBDevice> result = [];
+List<USBDeviceInfo> toDeviceList(Pointer<hid_device_info> pointer) {
+  List<USBDeviceInfo> result = [];
   var device = pointer;
 
   var i = 0;
   while (device.address != 0 && i < 256) {
-    result.add(USBDevice(
+    result.add(USBDeviceInfo(
       device.ref.vendor_id,
       device.ref.product_id, 
       toString(device.ref.serial_number),

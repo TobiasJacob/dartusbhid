@@ -22,11 +22,12 @@ class EnumerateDevicesMessage {
 void _enumerateDevices(EnumerateDevicesMessage msg) async {
   var devices = dartusbhid.bindings.hid_enumerate(0, 0);
   var deviceList = toDeviceList(devices);
+  dartusbhid.bindings.hid_free_enumeration(devices);
   Isolate.exit(msg.sendPort, deviceList);
 }
 
-Future<List<USBDevice>> enumerateDevices(int productId, int vendorId) async {
+Future<List<USBDeviceInfo>> enumerateDevices(int productId, int vendorId) async {
   final p = ReceivePort();
   await Isolate.spawn(_enumerateDevices, EnumerateDevicesMessage(p.sendPort, productId, vendorId));
-  return await p.first as List<USBDevice>;
+  return await p.first as List<USBDeviceInfo>;
 }
