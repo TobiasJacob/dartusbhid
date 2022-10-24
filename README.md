@@ -74,6 +74,7 @@ To use the native code, bindings in Dart are needed.
 To avoid writing these by hand, they are generated from the header file
 (`src/dartusbhid.h`) by `package:ffigen`.
 Regenerate the bindings by running `flutter pub run ffigen --config ffigen.yaml`.
+It may be required to install LLVM.
 
 ## Invoking native code
 

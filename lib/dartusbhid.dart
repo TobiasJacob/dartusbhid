@@ -11,7 +11,7 @@ import 'dartusbhid_bindings_generated.dart';
 /// For very short-lived functions, it is fine to call them on the main isolate.
 /// They will block the Dart execution while running the native function, so
 /// only do this for native functions which are guaranteed to be short-lived.
-int sum(int a, int b) => _bindings.sum(a, b);
+int sum(int a, int b) => a + b;
 
 /// A longer lived native function, which occupies the thread calling it.
 ///
@@ -24,13 +24,15 @@ int sum(int a, int b) => _bindings.sum(a, b);
 /// 1. Reuse a single isolate for various different kinds of requests.
 /// 2. Use multiple helper isolates for parallel execution.
 Future<int> sumAsync(int a, int b) async {
-  final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
-  final int requestId = _nextSumRequestId++;
-  final _SumRequest request = _SumRequest(requestId, a, b);
-  final Completer<int> completer = Completer<int>();
-  _sumRequests[requestId] = completer;
-  helperIsolateSendPort.send(request);
-  return completer.future;
+  await Future.delayed(const Duration(seconds: 5));
+  return 5;
+  // final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
+  // final int requestId = _nextSumRequestId++;
+  // final _SumRequest request = _SumRequest(requestId, a, b);
+  // final Completer<int> completer = Completer<int>();
+  // _sumRequests[requestId] = completer;
+  // helperIsolateSendPort.send(request);
+  // return completer.future;
 }
 
 const String _libName = 'dartusbhid';
@@ -113,7 +115,7 @@ Future<SendPort> _helperIsolateSendPort = () async {
       ..listen((dynamic data) {
         // On the helper isolate listen to requests and respond to them.
         if (data is _SumRequest) {
-          final int result = _bindings.sum_long_running(data.a, data.b);
+          final int result = 0;// _bindings.sum_long_running(data.a, data.b);
           final _SumResponse response = _SumResponse(data.id, result);
           sendPort.send(response);
           return;
