@@ -47,6 +47,12 @@ class _MyAppState extends State<MyApp> {
                 ),
                 spacerSmall,
                 Text(
+                  'sum(1, 2) = ${dartusbhid.getManufacturer()}',
+                  style: textStyle,
+                  textAlign: TextAlign.center,
+                ),
+                spacerSmall,
+                Text(
                   'sum(1, 2) = $sumResult',
                   style: textStyle,
                   textAlign: TextAlign.center,

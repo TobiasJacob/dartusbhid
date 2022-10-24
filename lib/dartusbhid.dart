@@ -13,6 +13,52 @@ import 'dartusbhid_bindings_generated.dart';
 /// only do this for native functions which are guaranteed to be short-lived.
 int sum(int a, int b) => a + b;
 
+String fromPointer(Pointer<WChar> str) {
+  var result = "";
+  var i = 0;
+  while (true) {
+    var val = str.elementAt(i).value;
+    if (val == 0 || i > 256) {
+      break;
+    }
+    result += String.fromCharCode(val);
+    i += 1;
+  }
+  return result;
+}
+
+List<hid_device_info> toList(Pointer<hid_device_info> pointer) {
+  List<hid_device_info> result = [];
+  var device = pointer;
+
+  var i = 0;
+  while (device.address != 0 && i < 256) {
+    result.add(device.ref);
+    i += 1;
+    device = device.ref.next;
+  }
+  return result;
+}
+
+String getManufacturer() {
+  var devices = _bindings.hid_enumerate(0, 0);
+  if (devices.address == 0) {
+    return "No devices";
+  }
+  if (devices.ref.manufacturer_string.address == 0) {
+    return "Empty manufacturer";
+  }
+  var deviceList = toList(devices);
+  for (var device in deviceList) {
+    print("Device: $device");
+    print("Product: ${fromPointer(device.product_string)}");
+    print("Man: ${fromPointer(device.manufacturer_string)}");
+  }
+  
+  _bindings.hid_free_enumeration(devices);
+  return deviceList.length.toString();
+}
+
 /// A longer lived native function, which occupies the thread calling it.
 ///
 /// Do not call these kind of native functions in the main isolate. They will
@@ -35,7 +81,7 @@ Future<int> sumAsync(int a, int b) async {
   // return completer.future;
 }
 
-const String _libName = 'dartusbhid';
+const String _libName = 'hidapi';
 
 /// The dynamic library in which the symbols for [DartusbhidBindings] can be found.
 final DynamicLibrary _dylib = () {
