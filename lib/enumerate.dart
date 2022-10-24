@@ -20,7 +20,7 @@ class EnumerateDevicesMessage {
 }
 
 void _enumerateDevices(EnumerateDevicesMessage msg) async {
-  var devices = dartusbhid.bindings.hid_enumerate(0, 0);
+  var devices = dartusbhid.bindings.hid_enumerate(msg.vendorId, msg.productId);
   var deviceList = toDeviceList(devices);
   dartusbhid.bindings.hid_free_enumeration(devices);
   Isolate.exit(msg.sendPort, deviceList);

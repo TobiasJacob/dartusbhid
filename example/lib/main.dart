@@ -5,9 +5,18 @@ import 'package:dartusbhid/dartusbhid.dart' as dartusbhid;
 import 'package:dartusbhid/enumerate.dart';
 
 void printDevices() async {
-  var devices = await enumerateDevices(0, 0);
-  print(devices);
+  var devices = await enumerateDevices(22352, 1155);
+  for (var device in devices) {
+    print(device.manufacturerString);
+    print(device.productString);
+    print(device.productId);
+    print(device.vendorId);
+  }
   var openDevice = await devices[0].open();
+  print(devices[0].manufacturerString);
+  for (var i = 0; i < 10; i++) {
+    print(await openDevice.readReport());
+  }
   await openDevice.close();
   print(devices[0]);
 }

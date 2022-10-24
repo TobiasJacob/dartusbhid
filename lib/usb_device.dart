@@ -38,9 +38,9 @@ class USBDeviceInfo {
 
   USBDeviceInfo(this.vendorId, this.productId, this.serialNumber, this.releaseNumber, this.manufacturerString, this.productString, this.usagePage, this.usage, this.interfaceNumber);
 
-  Future<OpenUSBDevice> open() async {
+  Future<OpenUSBDevice> open({int maxBufferLength = 256}) async {
     var responsePort = ReceivePort();
-    Isolate.spawn(usbIsolate, USBIsolateInit(responsePort.sendPort, vendorId, productId));
+    Isolate.spawn(usbIsolate, USBIsolateInit(responsePort.sendPort, vendorId, productId, maxBufferLength));
     var commandPort = await responsePort.first;
     if (commandPort is SendPort) {
       return OpenUSBDevice(commandPort);
