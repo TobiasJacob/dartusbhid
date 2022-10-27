@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:dartusbhid/conversion_helpers.dart';
 import 'package:dartusbhid/dartusbhid.dart';
+import 'package:dartusbhid/usb_device.dart';
 import 'package:flutter/foundation.dart';
 
 import 'dartusbhid_bindings_generated.dart';
@@ -112,8 +113,9 @@ void _readReport(USBIsolateInit initData, Pointer<hid_device> dev, USBIsolateCom
 
 class OpenUSBDevice {
   final SendPort commandPort;
+  final USBDeviceInfo deviceInfo;
 
-  OpenUSBDevice(this.commandPort);
+  OpenUSBDevice(this.commandPort, this.deviceInfo);
 
   /// Closes the hid device
   Future<void> close() async {

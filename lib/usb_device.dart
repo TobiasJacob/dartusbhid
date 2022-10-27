@@ -44,7 +44,7 @@ class USBDeviceInfo {
     Isolate.spawn(usbIsolate, USBIsolateInit(responsePort.sendPort, vendorId, productId, maxBufferLength));
     var commandPort = await responsePort.first;
     if (commandPort is SendPort) {
-      return OpenUSBDevice(commandPort);
+      return OpenUSBDevice(commandPort, this);
     } else {
       var resp = commandPort as USBIsolateResponse;
       throw Exception("Error closing device: ${resp.errorMsg}");
