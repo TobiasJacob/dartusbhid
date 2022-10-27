@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void monitorDevices() async {
-    var devices = await enumerateDevices(22352, 1155);
+    var devices = await enumerateDevices(0, 0);
     for (var device in devices) {
       print(device.manufacturerString);
       print(device.productString);

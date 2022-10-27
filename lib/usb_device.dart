@@ -38,6 +38,7 @@ class USBDeviceInfo {
 
   USBDeviceInfo(this.vendorId, this.productId, this.serialNumber, this.releaseNumber, this.manufacturerString, this.productString, this.usagePage, this.usage, this.interfaceNumber);
 
+  // Open this device to read and write output, input or feature reports. Throws an exception in case the command fails.
   Future<OpenUSBDevice> open({int maxBufferLength = 256}) async {
     var responsePort = ReceivePort();
     Isolate.spawn(usbIsolate, USBIsolateInit(responsePort.sendPort, vendorId, productId, maxBufferLength));
@@ -45,7 +46,8 @@ class USBDeviceInfo {
     if (commandPort is SendPort) {
       return OpenUSBDevice(commandPort);
     } else {
-      throw Exception("Error opening device");
+      var resp = commandPort as USBIsolateResponse;
+      throw Exception("Error closing device: ${resp.errorMsg}");
     }
   }
 }
