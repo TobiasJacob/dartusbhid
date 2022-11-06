@@ -3,7 +3,6 @@ import 'package:dartusbhid_example/deviceView.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:dartusbhid/dartusbhid.dart' as dartusbhid;
 import 'package:dartusbhid/enumerate.dart';
 
 import 'deviceInfo.dart';

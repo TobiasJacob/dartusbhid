@@ -1,5 +1,5 @@
 name: dartusbhid
-description: A new Flutter FFI plugin project.
+description: A dart wrapper for libusbhid, to interface with human input devices.
 version: 0.0.1
 homepage:
 
