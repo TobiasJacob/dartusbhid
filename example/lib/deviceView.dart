@@ -21,26 +21,32 @@ class _DeviceViewState extends State<DeviceView> {
 
   void _updateLoop() async {
     OpenUSBDevice? currentDevice;
-    while(isRunning) {
-      if (currentDevice?.deviceInfo != widget.deviceInfo) {
-        currentDevice?.close();
-        currentDevice = await widget.deviceInfo?.open();
-        print(currentDevice?.deviceInfo.productString);
-      }
-      if (currentDevice != null) {
-        // Show most recent report on screen
-        var newMsg = await currentDevice.readReport();
-        setState(() {
-          lastReport = newMsg.toString();
-        });
-      } else {
-        await Future.delayed(const Duration(milliseconds: 30));
+    while (isRunning) {
+      try {
+        if (currentDevice?.deviceInfo != widget.deviceInfo) {
+          currentDevice?.close();
+          currentDevice = await widget.deviceInfo?.open();
+          print(currentDevice?.deviceInfo.productString);
+        }
+        if (currentDevice != null) {
+          // Show most recent report on screen
+          var newMsg = await currentDevice.readReport(30);
+          setState(() {
+            lastReport = newMsg.toString();
+          });
+        } else {
+          await Future.delayed(const Duration(milliseconds: 30));
+        }
+      } catch (e) {
+        print(e);
       }
     }
     currentDevice?.close();
   }
 
-  _DeviceViewState() : lastReport = "Not selected", isRunning = true;
+  _DeviceViewState()
+      : lastReport = "Not selected",
+        isRunning = true;
 
   @override
   void initState() {
@@ -49,7 +55,6 @@ class _DeviceViewState extends State<DeviceView> {
     // Start watching the USB Device
     _updateLoop();
   }
-
 
   @override
   void dispose() {

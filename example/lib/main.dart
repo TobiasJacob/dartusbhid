@@ -21,19 +21,18 @@ class _MyAppState extends State<MyApp> {
   String text = "Hello world";
 
   USBDeviceInfo? currentDevice;
+  late Future<List<USBDeviceInfo>> devices;
 
   @override
   void initState() {
     super.initState();
+    devices = getDevices();
   }
 
   Future<List<USBDeviceInfo>> getDevices() async {
     var devices = await enumerateDevices(0, 0);
     // for (var device in devices) {
-    //   print(device.manufacturerString);
-    //   print(device.productString);
-    //   print(device.productId);
-    //   print(device.vendorId);
+    //   print(device);
     // }
     return devices;
     // var openDevice = await devices[0].open();
@@ -61,7 +60,7 @@ class _MyAppState extends State<MyApp> {
                 padding: const EdgeInsets.all(10),
                 width: 200,
                 child: FutureBuilder<List<USBDeviceInfo>>(
-                    future: getDevices(),
+                    future: devices,
                     builder: (BuildContext context,
                         AsyncSnapshot<List<USBDeviceInfo>> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -83,7 +82,7 @@ class _MyAppState extends State<MyApp> {
                                         margin: const EdgeInsets.all(2),
                                         child: Center(
                                             child: Text(
-                                          '${device.productString} - (${device.manufacturerString})',
+                                          '${device.productString} - (${device.serialNumber})',
                                           style: const TextStyle(fontSize: 18),
                                         ))),
                                     onTap: () {
