@@ -6,6 +6,8 @@ import 'dart:async';
 import 'package:dartusbhid/dartusbhid.dart' as dartusbhid;
 import 'package:dartusbhid/enumerate.dart';
 
+import 'deviceInfo.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -58,7 +60,8 @@ class _MyAppState extends State<MyApp> {
           children: [
             Container(
                 padding: const EdgeInsets.all(10),
-                width: 200,
+                color: Colors.lightBlue[50],
+                width: 300,
                 child: FutureBuilder<List<USBDeviceInfo>>(
                     future: devices,
                     builder: (BuildContext context,
@@ -71,26 +74,21 @@ class _MyAppState extends State<MyApp> {
                           return Center(
                               child: Text('Error: ${snapshot.error}'));
                         } else {
-                          return ListView.builder(
+                          return ListView.separated(
                               padding: const EdgeInsets.all(8),
                               itemCount: snapshot.data!.length,
                               itemBuilder: (BuildContext context, int index) {
                                 var device = snapshot.data![index];
                                 return GestureDetector(
-                                    child: Container(
-                                        height: 50,
-                                        margin: const EdgeInsets.all(2),
-                                        child: Center(
-                                            child: Text(
-                                          '${device.productString} - (${device.serialNumber})',
-                                          style: const TextStyle(fontSize: 18),
-                                        ))),
+                                    child: DeviceInfoWidget(device),
                                     onTap: () {
                                       setState(() {
                                         currentDevice = device;
                                       });
                                     });
-                              });
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const Divider());
                         }
                       }
                     })),
