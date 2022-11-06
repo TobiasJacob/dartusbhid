@@ -65,6 +65,12 @@ class _DeviceViewState extends State<DeviceView> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(lastReport);
+    return Container(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [Text(widget.deviceInfo.toString()), Text(lastReport)]),
+    );
   }
 }
