@@ -26,19 +26,25 @@ class _DeviceViewState extends State<DeviceView> {
         if (currentDevice?.deviceInfo != widget.deviceInfo) {
           currentDevice?.close();
           currentDevice = await widget.deviceInfo?.open();
-          print(currentDevice?.deviceInfo.productString);
+          setState(() {
+            lastReport = "No data received yet";
+          });
         }
         if (currentDevice != null) {
           // Show most recent report on screen
           var newMsg = await currentDevice.readReport(30);
-          setState(() {
-            lastReport = newMsg.toString();
-          });
+          if (newMsg.isNotEmpty) {
+            setState(() {
+              lastReport = newMsg.toString();
+            });
+          }
         } else {
           await Future.delayed(const Duration(milliseconds: 30));
         }
       } catch (e) {
-        print(e);
+        setState(() {
+          lastReport = e.toString();
+        });
       }
     }
     currentDevice?.close();
@@ -65,6 +71,8 @@ class _DeviceViewState extends State<DeviceView> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.deviceInfo == null) return Container();
+
     return Container(
       padding: const EdgeInsets.all(10.0),
       child: Column(
