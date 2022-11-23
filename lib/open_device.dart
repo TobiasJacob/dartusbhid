@@ -13,11 +13,11 @@ import 'package:ffi/ffi.dart';
 import 'dart:async';
 
 enum USBDeviceCommand {
-  Close,
-  ReadReport,
-  WriteReport,
-  SendFeatureReport,
-  GetFeatureReport,
+  close,
+  readReport,
+  writeReport,
+  sendFeatureReport,
+  getFeatureReport,
 }
 
 class USBIsolateCommand {
@@ -28,7 +28,7 @@ class USBIsolateCommand {
   USBIsolateCommand(this.responsePort, this.command, this.buffer, this.timeout);
 }
 
-enum USBDeviceStatus { Ok, Fail }
+enum USBDeviceStatus { ok, fail }
 
 class USBIsolateResponse {
   final USBDeviceStatus status;
@@ -53,22 +53,22 @@ void usbIsolate(USBIsolateInit initData) {
   if (dev.address == 0) {
     var errorMsg = toString(bindings.hid_error(Pointer.fromAddress(0)));
     Isolate.exit(initData.responsePort,
-        USBIsolateResponse(USBDeviceStatus.Fail, null, errorMsg));
+        USBIsolateResponse(USBDeviceStatus.fail, null, errorMsg));
   }
   initData.responsePort.send(mainToIsolateStream.sendPort);
 
   mainToIsolateStream.listen((data) {
     var command = data as USBIsolateCommand;
     switch (command.command) {
-      case USBDeviceCommand.Close:
+      case USBDeviceCommand.close:
         bindings.hid_close(dev);
         command.responsePort
-            .send(USBIsolateResponse(USBDeviceStatus.Ok, null, null));
+            .send(USBIsolateResponse(USBDeviceStatus.ok, null, null));
         break;
-      case USBDeviceCommand.ReadReport:
+      case USBDeviceCommand.readReport:
         _readReport(initData, dev, command);
         break;
-      case USBDeviceCommand.WriteReport:
+      case USBDeviceCommand.writeReport:
         _writeReport(initData, dev, command);
         break;
       default:
@@ -82,7 +82,7 @@ void _writeReport(USBIsolateInit initData, Pointer<hid_device> dev,
   if (command.buffer == null) {
     var errorMsg = toString(bindings.hid_error(dev));
     command.responsePort
-        .send(USBIsolateResponse(USBDeviceStatus.Fail, null, errorMsg));
+        .send(USBIsolateResponse(USBDeviceStatus.fail, null, errorMsg));
     return;
   }
   final writeBuffer = malloc.allocate<UnsignedChar>(command.buffer!.length);
@@ -95,10 +95,10 @@ void _writeReport(USBIsolateInit initData, Pointer<hid_device> dev,
   if (bytesWritten != command.buffer!.length) {
     var errorMsg = toString(bindings.hid_error(dev));
     command.responsePort
-        .send(USBIsolateResponse(USBDeviceStatus.Fail, null, errorMsg));
+        .send(USBIsolateResponse(USBDeviceStatus.fail, null, errorMsg));
     return;
   }
-  command.responsePort.send(USBIsolateResponse(USBDeviceStatus.Ok, null, null));
+  command.responsePort.send(USBIsolateResponse(USBDeviceStatus.ok, null, null));
 }
 
 void _readReport(USBIsolateInit initData, Pointer<hid_device> dev,
@@ -114,7 +114,7 @@ void _readReport(USBIsolateInit initData, Pointer<hid_device> dev,
   if (bytesRead == -1) {
     var errorMsg = toString(bindings.hid_error(dev));
     command.responsePort
-        .send(USBIsolateResponse(USBDeviceStatus.Fail, null, errorMsg));
+        .send(USBIsolateResponse(USBDeviceStatus.fail, null, errorMsg));
     return;
   }
   var responseBuffer = Uint8List(bytesRead);
@@ -123,7 +123,7 @@ void _readReport(USBIsolateInit initData, Pointer<hid_device> dev,
   }
   malloc.free(resultBuffer);
   command.responsePort
-      .send(USBIsolateResponse(USBDeviceStatus.Ok, responseBuffer, null));
+      .send(USBIsolateResponse(USBDeviceStatus.ok, responseBuffer, null));
 }
 
 class OpenUSBDevice {
@@ -136,9 +136,9 @@ class OpenUSBDevice {
   Future<void> close() async {
     var responsePort = ReceivePort();
     commandPort.send(USBIsolateCommand(
-        responsePort.sendPort, USBDeviceCommand.Close, null, null));
+        responsePort.sendPort, USBDeviceCommand.close, null, null));
     var resp = await responsePort.first as USBIsolateResponse;
-    if (resp.status != USBDeviceStatus.Ok) {
+    if (resp.status != USBDeviceStatus.ok) {
       throw Exception("Error closing device: ${resp.errorMsg}");
     }
   }
@@ -155,9 +155,9 @@ class OpenUSBDevice {
   Future<Uint8List> readReport(int? timeoutMillis) async {
     var responsePort = ReceivePort();
     commandPort.send(USBIsolateCommand(responsePort.sendPort,
-        USBDeviceCommand.ReadReport, null, timeoutMillis));
+        USBDeviceCommand.readReport, null, timeoutMillis));
     var resp = await responsePort.first as USBIsolateResponse;
-    if (resp.status != USBDeviceStatus.Ok) {
+    if (resp.status != USBDeviceStatus.ok) {
       throw Exception("Error reading device: ${resp.errorMsg}");
     }
     return resp.buffer as Uint8List;
@@ -183,9 +183,9 @@ class OpenUSBDevice {
   void sendReport(Uint8List buffer) async {
     var responsePort = ReceivePort();
     commandPort.send(USBIsolateCommand(responsePort.sendPort,
-        USBDeviceCommand.SendFeatureReport, buffer, null));
+        USBDeviceCommand.sendFeatureReport, buffer, null));
     var resp = await responsePort.first as USBIsolateResponse;
-    if (resp.status != USBDeviceStatus.Ok) {
+    if (resp.status != USBDeviceStatus.ok) {
       throw Exception("Error reading device: ${resp.errorMsg}");
     }
   }

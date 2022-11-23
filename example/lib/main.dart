@@ -1,11 +1,11 @@
 import 'package:dartusbhid/usb_device.dart';
-import 'package:dartusbhid_example/deviceView.dart';
+import 'package:dartusbhid_example/device_view.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:dartusbhid/enumerate.dart';
 
-import 'deviceInfo.dart';
+import 'device_info.dart';
 
 void main() {
   runApp(const MyApp());

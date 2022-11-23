@@ -1,15 +1,10 @@
-
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:io';
 import 'dart:isolate';
 
 import 'package:dartusbhid/usb_device.dart';
 
-import 'dartusbhid_bindings_generated.dart';
 import 'conversion_helpers.dart';
 import 'dartusbhid.dart' as dartusbhid;
-
 
 class EnumerateDevicesMessage {
   SendPort sendPort;
@@ -26,8 +21,10 @@ void _enumerateDevices(EnumerateDevicesMessage msg) async {
   Isolate.exit(msg.sendPort, deviceList);
 }
 
-Future<List<USBDeviceInfo>> enumerateDevices(int productId, int vendorId) async {
+Future<List<USBDeviceInfo>> enumerateDevices(
+    int productId, int vendorId) async {
   final p = ReceivePort();
-  await Isolate.spawn(_enumerateDevices, EnumerateDevicesMessage(p.sendPort, productId, vendorId));
+  await Isolate.spawn(_enumerateDevices,
+      EnumerateDevicesMessage(p.sendPort, productId, vendorId));
   return await p.first as List<USBDeviceInfo>;
 }

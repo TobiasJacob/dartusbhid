@@ -1,10 +1,6 @@
-import 'dart:isolate';
-
 import 'package:dartusbhid/open_device.dart';
 import 'package:dartusbhid/usb_device.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class DeviceView extends StatefulWidget {
   const DeviceView({super.key, this.deviceInfo});

@@ -1,13 +1,7 @@
-
-import 'dart:async';
 import 'dart:ffi';
 import 'dart:io';
-import 'dart:isolate';
-
-import 'package:dartusbhid/usb_device.dart';
 
 import 'dartusbhid_bindings_generated.dart';
-import 'conversion_helpers.dart';
 
 const String _libName = 'hidapi';
 

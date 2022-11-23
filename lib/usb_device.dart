@@ -1,10 +1,6 @@
 import 'dart:isolate';
 
-import 'package:dartusbhid/dartusbhid.dart';
 import 'package:dartusbhid/open_device.dart';
-
-import 'dartusbhid_bindings_generated.dart';
-import 'dart:ffi' as ffi;
 
 class USBDeviceInfo {
   /// Device Vendor ID
