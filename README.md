@@ -50,4 +50,10 @@ cd dartusbhid/example
 flutter run
 ```
 
-from there on you can start to develop the library.
+from there on you can start to develop the library. Publish the library by increasing the version, adjusting the changelog and using
+
+```console
+cd dartusbhid
+flutter analyze
+flutter pub publish
+```
