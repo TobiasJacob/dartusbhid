@@ -1,3 +1,7 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Intial release.
+
+## 0.1.0
+
+* Fixed naming conventions.

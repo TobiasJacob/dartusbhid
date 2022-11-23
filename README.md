@@ -1,6 +1,13 @@
 # dartusbhid
 
-A dart wrapper for libusbhid, to interface with human input devices. It runs in its own isolate.
+A dart wrapper for libusbhid, to interface with human input devices. It runs in its own isolate. Supports
+
+* Enumerating USB HID devices
+* Reading and writing device reports with or without report ID
+
+Planned:
+
+* Read and write feature reports
 
 ## Installation
 
@@ -23,3 +30,14 @@ final receivedData = await openDevice.readReport();
 await openDevice.close();
 ```
 
+## Development
+
+To try out the example
+
+```console
+git clone https://github.com/TobiasJacob/dartusbhid.git
+cd dartusbhid/example
+flutter run
+```
+
+from there on you can start to develop the library.
