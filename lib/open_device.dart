@@ -92,6 +92,8 @@ void _writeReport(USBIsolateInit initData, Pointer<hid_device> dev,
   final bytesWritten =
       bindings.hid_write(dev, writeBuffer, command.buffer!.length);
   malloc.free(writeBuffer);
+  print(bytesWritten);
+  print(command.buffer!.length);
   if (bytesWritten != command.buffer!.length) {
     var errorMsg = toString(bindings.hid_error(dev));
     command.responsePort
@@ -168,25 +170,25 @@ class OpenUSBDevice {
   /// The first byte of [buffer] must contain the Report ID. For
   /// devices which only support a single report, this must be set
   /// to 0x0. The remaining bytes contain the report data. Since
-  /// the Report ID is mandatory, calls to sendReport() will always
+  /// the Report ID is mandatory, calls to writeReport() will always
   /// contain one more byte than the report contains. For example,
   /// if a hid report is 16 bytes long, 17 bytes must be passed to
-  /// sendReport(), the Report ID (or 0x0, for devices with a
+  /// writeReport(), the Report ID (or 0x0, for devices with a
   /// single report), followed by the report data (16 bytes). In
   /// this example, the length passed in would be 17.
   ///
-  /// sendReport() will send the data on the first OUT endpoint, if
+  /// writeReport() will send the data on the first OUT endpoint, if
   /// one exists. If it does not, it will send the data through
   /// the Control Endpoint (Endpoint 0).
   ///
   /// If the write fails this function will throw an exception.
-  void sendReport(Uint8List buffer) async {
+  Future<void> writeReport(Uint8List buffer) async {
     var responsePort = ReceivePort();
     commandPort.send(USBIsolateCommand(responsePort.sendPort,
-        USBDeviceCommand.sendFeatureReport, buffer, null));
+        USBDeviceCommand.writeReport, buffer, null));
     var resp = await responsePort.first as USBIsolateResponse;
     if (resp.status != USBDeviceStatus.ok) {
-      throw Exception("Error reading device: ${resp.errorMsg}");
+      throw Exception("Error writing to device: ${resp.errorMsg}");
     }
   }
 }

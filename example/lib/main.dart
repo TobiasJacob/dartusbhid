@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:dartusbhid/usb_device.dart';
 import 'package:dartusbhid_example/device_view.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +10,35 @@ import 'package:dartusbhid/enumerate.dart';
 
 import 'device_info.dart';
 
+void exampleComm() async {
+  final devices = await enumerateDevices(22352, 1155);
+  print(devices.length);
+  for (final device in devices) {
+    // Print device information like product name, vendor, etc.
+    print(device);
+  }
+
+  final openDevice = await devices[0].open();
+  // Read data without timeout (timeout: null)
+  print("Waiting for first hid report");
+  for (var i = 0; i < 100; i++) {
+    final receivedData = await openDevice.readReport(null);
+    print("receivedData");
+    print(receivedData);
+
+    var uint8list = Uint8List.fromList(" hi y".codeUnits);
+    uint8list[0] = 2;
+    await openDevice.writeReport(uint8list);
+    final echoData = await openDevice.readReport(null);
+    print("echoData");
+    print(String.fromCharCodes(echoData));
+    sleep(Duration(seconds: 1));
+  }
+  await openDevice.close();
+}
+
 void main() {
+  exampleComm();
   runApp(const MyApp());
 }
 
