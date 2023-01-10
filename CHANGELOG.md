@@ -13,3 +13,7 @@
 ## 0.1.2
 
 * Change return type of sendReport to Future<void> instead of void
+
+## 0.1.3
+
+* Bugfix for send Report

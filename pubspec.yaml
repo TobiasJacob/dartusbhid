@@ -1,6 +1,6 @@
 name: dartusbhid
 description: A dart wrapper for libusbhid, to interface with USB human input devices. Supports device properties like product and vendorID and the ability to read and write reports.
-version: 0.1.2
+version: 0.1.3
 homepage:
 repository: https://github.com/TobiasJacob/dartusbhid
 
