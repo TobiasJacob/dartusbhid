@@ -26,7 +26,8 @@ void exampleComm() async {
     print("receivedData");
     print(receivedData);
 
-    var uint8list = Uint8List.fromList(" hi y".codeUnits);
+    // generate list with 64 bytes
+    var uint8list = Uint8List.fromList(List.generate(64, (index) => 0));
     uint8list[0] = 2;
     await openDevice.writeReport(uint8list);
     final echoData = await openDevice.readReport(null);
