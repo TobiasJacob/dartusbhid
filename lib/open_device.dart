@@ -92,8 +92,6 @@ void _writeReport(USBIsolateInit initData, Pointer<hid_device> dev,
   final bytesWritten =
       bindings.hid_write(dev, writeBuffer, command.buffer!.length);
   malloc.free(writeBuffer);
-  print(bytesWritten);
-  print(command.buffer!.length);
   if (bytesWritten != command.buffer!.length) {
     var errorMsg = toString(bindings.hid_error(dev));
     command.responsePort

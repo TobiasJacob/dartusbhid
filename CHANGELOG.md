@@ -17,3 +17,7 @@
 ## 0.1.3
 
 * Bugfix for send Report
+
+## 0.1.4
+
+* Removed print statement
