@@ -22,6 +22,7 @@ flutter pub add dartusbhid
 import 'package:dartusbhid/enumerate.dart';
 
 void printDeviceList() async {
+  // Enumerate all devices
   // Passing 0 for vendor and product Id will enumerate all devices.
   final devices = await enumerateDevices(0, 0);
   print(devices.length);
@@ -30,11 +31,18 @@ void printDeviceList() async {
     print(device);
   }
 
+  // Open the first device
   final openDevice = await devices[0].open();
+
   // Read data without timeout (timeout: null)
   print("Waiting for first hid report");
   final receivedData = await openDevice.readReport(null);
   print(receivedData);
+
+  // Send 64 bytes of data to the device
+  var uint8list = Uint8List.fromList(List.generate(64, (index) => 0));
+  uint8list[0] = 2; // Report ID
+  await openDevice.writeReport(uint8list);
   await openDevice.close();
 }
 
