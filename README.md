@@ -22,6 +22,7 @@ flutter pub add dartusbhid
 import 'package:dartusbhid/enumerate.dart';
 
 void printDeviceList() async {
+  // Passing 0 for vendor and product Id will enumerate all devices.
   final devices = await enumerateDevices(0, 0);
   print(devices.length);
   for (final device in devices) {
