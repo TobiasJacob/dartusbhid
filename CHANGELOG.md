@@ -25,3 +25,7 @@
 ## 1.0.0
 
 * Improved readme and bumped version to 1.0.0
+
+## 1.0.1
+
+* Improved readme

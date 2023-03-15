@@ -37,12 +37,15 @@ void printDeviceList() async {
   // Read data without timeout (timeout: null)
   print("Waiting for first hid report");
   final receivedData = await openDevice.readReport(null);
+  print("Report ID is: ${receivedData[0]}");
   print(receivedData);
 
   // Send 64 bytes of data to the device
   var uint8list = Uint8List.fromList(List.generate(64, (index) => 0));
-  uint8list[0] = 2; // Report ID
+  uint8list[0] = 2; // Set the Report ID
   await openDevice.writeReport(uint8list);
+
+  // Close the device
   await openDevice.close();
 }
 
