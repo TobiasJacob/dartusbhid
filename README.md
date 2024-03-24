@@ -58,6 +58,8 @@ To try out the example
 
 ```console
 git clone https://github.com/TobiasJacob/dartusbhid.git
+git submodule init
+git submodule update
 cd dartusbhid/example
 flutter run
 ```
